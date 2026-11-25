@@ -145,8 +145,8 @@ export function poseOf(dx: number, d: number, c: PoseConfig) {
     yaw: c.yaw + d * c.fan,
     roll: d * c.roll,
     zIndex,
-    opacity: Math.abs(d) > 2.5 ? Math.max(0, 1 - (Math.abs(d) - 2.5) / 1.2) : 1,
-    hidden: Math.abs(dx) > 3.5,
+    opacity: Math.abs(d) > 3.4 ? Math.max(0, 1 - (Math.abs(d) - 3.4) / 1.2) : 1,
+    hidden: Math.abs(dx) > 4.6,
   }
 }
 
