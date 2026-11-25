@@ -246,7 +246,7 @@ export function VinylPlayer() {
             onCaptionClick={handleDiscCaptionClick}
             height="100%"
             discSize={
-              isMobile ? "185px" : "clamp(220px, min(48vmin, 34vw), 350px)"
+              isMobile ? "164px" : "clamp(220px, min(48vmin, 34vw), 350px)"
             }
             spacing={isMobile ? 1.32 : 1.55}
             rise={0}
@@ -265,9 +265,9 @@ export function VinylPlayer() {
             color="#f4f7fb"
           />
 
-          {/* Smooth scrollable 5-line faded live lyrics below the disc & title */}
+          {/* Smooth scrollable faded live lyrics below the disc & title */}
           {syncedLyrics.length > 0 && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-14 z-10 flex justify-center px-6 sm:bottom-11">
+            <div className="pointer-events-none absolute inset-x-0 bottom-2 z-10 flex justify-center px-5 sm:bottom-11 sm:px-6">
               <div
                 onWheel={() => {
                   userScrollingLyricsRef.current = true;
@@ -285,7 +285,7 @@ export function VinylPlayer() {
                     userScrollingLyricsRef.current = false;
                   }, 2500);
                 }}
-                className="pointer-events-auto h-[168px] w-full max-w-3xl overflow-y-auto overscroll-contain text-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="pointer-events-auto h-[126px] w-full max-w-3xl overflow-y-auto overscroll-contain text-center [scrollbar-width:none] sm:h-[168px] [&::-webkit-scrollbar]:hidden"
                 style={{
                   maskImage:
                     "linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%)",
