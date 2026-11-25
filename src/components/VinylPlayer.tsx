@@ -267,7 +267,7 @@ export function VinylPlayer() {
 
           {/* Smooth scrollable faded live lyrics below the disc & title */}
           {syncedLyrics.length > 0 && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-2 z-10 flex justify-center px-5 sm:bottom-11 sm:px-6">
+            <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-5 sm:bottom-11 sm:px-6">
               <div
                 onWheel={() => {
                   userScrollingLyricsRef.current = true;

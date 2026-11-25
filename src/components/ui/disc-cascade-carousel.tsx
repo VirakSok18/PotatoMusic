@@ -310,7 +310,7 @@ const CSS =
   ".dcc-hint{position:absolute;left:var(--dcc-pad);bottom:var(--dcc-pad);z-index:4;font-size:9px;letter-spacing:.18em;" +
   "text-transform:uppercase;opacity:.45;pointer-events:none;line-height:34px}" +
   ".dcc-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}" +
-  "@container (max-width:640px){.dcc-head{display:none}.dcc-stage{top:26%}.dcc-caption{font-size:13px;top:calc(100% + 14px)}.dcc-slide[data-active] .dcc-caption{font-size:16px}}" +
+  "@container (max-width:640px){.dcc-head{display:none}.dcc-stage{top:29%}.dcc-caption{font-size:13px;top:calc(100% + 14px)}.dcc-slide[data-active] .dcc-caption{font-size:16px}}" +
   "@container (max-width:720px){.dcc-link{display:none}.dcc-rev+.dcc-rev{display:none}.dcc-hint{display:none}" +
   ".dcc-head{width:clamp(150px,48cqw,240px);top:calc(var(--dcc-pad) * 1.2)}.dcc-row:nth-child(n+3){display:none}}" +
   "@media (prefers-reduced-motion:reduce){.dcc-root .dcc-idle{animation:none}.dcc-in,.dcc-list{animation:none}" +
