@@ -257,6 +257,7 @@ export function VinylPlayer() {
             loop={queue.length > 2}
             spin={18}
             paused={!isPlaying}
+            sheen={isMobile ? 0 : 0.55}
             details
             controls={false}
             frame={false}
