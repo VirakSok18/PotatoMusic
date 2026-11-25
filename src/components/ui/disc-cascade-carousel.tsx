@@ -653,10 +653,26 @@ function DiscCascadeCarouselInner({
   }, [index, n])
 
   React.useEffect(() => {
+    if (!n) return
+    slideRefs.current.length = n
+    // Re-anchor spring positions to the active index whenever queue length changes
+    // so appending 13 new radio tracks never shifts loop offsets off-screen.
+    const anchor = wrapIndex(index ?? cb.current.active, n)
+    E.a = anchor
+    E.b = anchor
+    E.target = anchor
+    E.va = 0
+    E.vb = 0
+    setActive(anchor)
+    paint()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [n])
+
+  React.useEffect(() => {
     if (n && !loop && E.target > n - 1) setTarget(n - 1, false)
     paint()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [n, loop, spacing, rise, depth, yaw, fan, tilt, roll])
+  }, [loop, spacing, rise, depth, yaw, fan, tilt, roll])
 
   React.useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -979,10 +995,10 @@ function DiscCascadeCarouselInner({
               onClick={() => onSlideClick(i)}
               style={
                 {
+                  display: t.hidden ? "none" : undefined,
                   transform: t.transform,
                   zIndex: t.zIndex,
                   opacity: t.opacity < 1 ? t.opacity : undefined,
-                  visibility: t.hidden ? "hidden" : undefined,
                   ["--dcc-roll" as string]: t.roll,
                   ["--dcc-glint" as string]: t.glint,
                 } as React.CSSProperties
