@@ -11,10 +11,12 @@ import React, {
 } from "react";
 import {
   getLikedTracks,
+  getPlayerPrefs,
   getPlaylists,
   getRecentTracks,
   getSavedSession,
   saveLikedTracks,
+  savePlayerPrefs,
   savePlaylists,
   saveRecentTracks,
   saveSession,
@@ -155,10 +157,22 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     toastTimerRef.current = setTimeout(() => setToast(null), 2400);
   }, []);
 
+  const prefsLoadedRef = useRef(false);
+
   useEffect(() => {
     setLikedTracks(getLikedTracks());
     setRecentTracks(getRecentTracks());
     setPlaylists(getPlaylists());
+    const prefs = getPlayerPrefs();
+    setVolumeState(prefs.volume);
+    volumeRef.current = prefs.volume;
+    if (prefs.volume > 0) lastVolumeRef.current = prefs.volume;
+    setRepeat(prefs.repeat);
+    setShuffle(prefs.shuffle);
+    prefsLoadedRef.current = true;
+    if (playerReadyRef.current && playerRef.current) {
+      playerRef.current.setVolume(prefs.volume);
+    }
     const saved = getSavedSession();
     if (saved && saved.queue.length > 0) {
       const idx = Math.max(0, Math.min(saved.currentIndex, saved.queue.length - 1));
@@ -167,6 +181,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setDuration(saved.queue[idx]?.duration || 0);
     }
   }, []);
+
+  useEffect(() => {
+    if (!prefsLoadedRef.current) return;
+    savePlayerPrefs({ volume, repeat, shuffle });
+  }, [volume, repeat, shuffle]);
 
   useEffect(() => {
     if (queue.length > 0 && currentIndex >= 0) {

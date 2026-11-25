@@ -5,6 +5,25 @@ const RECENT_KEY = "potatomusic_recent_v1";
 const PLAYLISTS_KEY = "potatomusic_playlists_v1";
 const SESSION_KEY = "potatomusic_session_v1";
 const SEARCHES_KEY = "potatomusic_searches_v1";
+const PREFS_KEY = "potatomusic_prefs_v1";
+
+export interface PlayerPrefs {
+  volume: number;
+  repeat: "off" | "all" | "one";
+  shuffle: boolean;
+}
+
+export function getPlayerPrefs(): PlayerPrefs {
+  return safeParse<PlayerPrefs>(PREFS_KEY, {
+    volume: 85,
+    repeat: "off",
+    shuffle: false,
+  });
+}
+
+export function savePlayerPrefs(prefs: PlayerPrefs) {
+  safeSave(PREFS_KEY, prefs);
+}
 
 function safeParse<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
