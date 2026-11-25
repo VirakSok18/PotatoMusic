@@ -187,6 +187,22 @@ export function HomeClient({ initialShelves }: HomeClientProps) {
                   </div>
                 )}
 
+              {(searchTab === "all" || searchTab === "songs") &&
+                searchResults.length > 0 && (
+                  <div>
+                    <h2 className="mb-4 text-xl font-bold text-white">Songs</h2>
+                    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                      {searchResults.map((track) => (
+                        <VinylCard
+                          key={track.videoId}
+                          track={track}
+                          queue={searchResults}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               {(searchTab === "all" || searchTab === "albums") &&
                 albumResults.length > 0 && (
                   <div>
@@ -218,22 +234,6 @@ export function HomeClient({ initialShelves }: HomeClientProps) {
                             {alb.year ? ` · ${alb.year}` : ""}
                           </p>
                         </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              {(searchTab === "all" || searchTab === "songs") &&
-                searchResults.length > 0 && (
-                  <div>
-                    <h2 className="mb-4 text-xl font-bold text-white">Songs</h2>
-                    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                      {searchResults.map((track) => (
-                        <VinylCard
-                          key={track.videoId}
-                          track={track}
-                          queue={searchResults}
-                        />
                       ))}
                     </div>
                   </div>
