@@ -17,7 +17,7 @@ export function HomeQueuePanel() {
   } = usePlayer();
 
   return (
-    <aside className="fixed bottom-20 left-0 top-0 z-20 hidden w-72 flex-col overflow-hidden bg-[#0c0c0f] 2xl:flex">
+    <aside className="fixed bottom-20 left-0 top-0 z-20 hidden w-72 flex-col overflow-hidden bg-[#0a0a0c] 2xl:flex">
       <div className="px-4 pb-3 pt-6">
         <h3 className="text-sm font-bold text-white">Up Next</h3>
         <p className="text-[11px] text-[#9aa6bc]">
@@ -156,7 +156,7 @@ export function HomeLyricsPanel() {
   }, [activeIdx]);
 
   return (
-    <aside className="fixed bottom-20 right-0 top-0 z-20 hidden w-72 flex-col overflow-hidden bg-[#0c0c0f] 2xl:flex">
+    <aside className="fixed bottom-20 right-0 top-0 z-20 hidden w-72 flex-col overflow-hidden bg-[#0a0a0c] 2xl:flex">
       <div className="px-4 pb-3 pt-6">
         <h3 className="text-sm font-bold text-white">Lyrics</h3>
         <p className="truncate text-[11px] text-[#9aa6bc]">
