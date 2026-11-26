@@ -83,6 +83,14 @@ body {
   animation: eq-bounce 0.9s ease-in-out infinite;
 }
 
+/* Pause all GPU animations when tab is in the background (e.g. while gaming) */
+html.tab-hidden .vinyl-spin,
+html.tab-hidden .vinyl-spin-fast,
+html.tab-hidden .eq-bar,
+html.tab-hidden .dcc-idle {
+  animation-play-state: paused !important;
+}
+
 .vinyl-spin {
   animation: vinyl-spin 18s linear infinite;
 }

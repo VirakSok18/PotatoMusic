@@ -31,6 +31,7 @@ interface YTPlayerInstance {
   getCurrentTime: () => number;
   getDuration: () => number;
   setVolume: (volume: number) => void;
+  setPlaybackQuality?: (suggestedQuality: string) => void;
   destroy: () => void;
 }
 
@@ -396,6 +397,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
             if (state === 1) {
               setIsPlaying(true);
               setIsBuffering(false);
+              // Drop hidden video decode to lowest resolution to save GPU while gaming
+              playerRef.current?.setPlaybackQuality?.("small");
               const d = playerRef.current?.getDuration() || 0;
               if (d > 0) setDuration(d);
             } else if (state === 2) {
@@ -458,9 +461,25 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
   }, [nextTrack, showToast]);
 
-  // Poll playback time smoothly for seek bar + synced lyrics
+  // Pause GPU animations & React time-polling when tab is hidden (e.g. while gaming)
+  useEffect(() => {
+    const syncVisibility = () => {
+      const hidden = document.hidden;
+      document.documentElement.classList.toggle("tab-hidden", hidden);
+      if (!hidden && playerReadyRef.current && playerRef.current) {
+        const t = playerRef.current.getCurrentTime();
+        if (Number.isFinite(t)) setCurrentTime(t);
+      }
+    };
+    syncVisibility();
+    document.addEventListener("visibilitychange", syncVisibility);
+    return () => document.removeEventListener("visibilitychange", syncVisibility);
+  }, []);
+
+  // Poll playback time smoothly for seek bar + synced lyrics (skipped when tab is hidden)
   useEffect(() => {
     const interval = setInterval(() => {
+      if (document.hidden) return;
       if (!playerReadyRef.current || !playerRef.current) return;
       if (!isPlaying) return;
       const t = playerRef.current.getCurrentTime();
