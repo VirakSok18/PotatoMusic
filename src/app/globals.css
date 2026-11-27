@@ -83,12 +83,22 @@ body {
   animation: eq-bounce 0.9s ease-in-out infinite;
 }
 
-/* Pause all GPU animations when tab is in the background (e.g. while gaming) */
+/* Pause all GPU animations when tab is hidden, unfocused, or in Gaming Mode */
 html.tab-hidden .vinyl-spin,
 html.tab-hidden .vinyl-spin-fast,
 html.tab-hidden .eq-bar,
-html.tab-hidden .dcc-idle {
+html.tab-hidden .dcc-idle,
+html.gaming-mode .vinyl-spin,
+html.gaming-mode .vinyl-spin-fast,
+html.gaming-mode .eq-bar,
+html.gaming-mode .dcc-idle {
   animation-play-state: paused !important;
+}
+
+/* Disable expensive GPU backdrop-blur in Gaming Mode */
+html.gaming-mode * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .vinyl-spin {

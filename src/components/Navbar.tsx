@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Gamepad2, Search, X } from "lucide-react";
 import { TabBar } from "glisse";
 import { Suspense, useEffect, useState } from "react";
+import { usePlayer } from "@/components/PlayerContext";
 
 const NAV_TABS = [
   { value: "/", label: "Home" },
@@ -22,6 +23,7 @@ function NavbarInner() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { gamingMode, toggleGamingMode } = usePlayer();
   const urlQ = searchParams.get("q") || "";
 
   const [query, setQuery] = useState(urlQ);
@@ -93,8 +95,30 @@ function NavbarInner() {
           />
         </div>
 
-        {/* Right: Sleek Search pill */}
-        <div className="relative flex-1 max-w-xs sm:max-w-sm lg:flex-none lg:w-72">
+        {/* Right: Gaming Mode + Sleek Search pill */}
+        <div className="flex flex-1 items-center justify-end gap-2 lg:flex-none">
+          <button
+            type="button"
+            onClick={toggleGamingMode}
+            title={
+              gamingMode
+                ? "Gaming Mode ON (low GPU/CPU)"
+                : "Enable Gaming Mode (low GPU/CPU)"
+            }
+            aria-label="Toggle Gaming Mode"
+            className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold transition ${
+              gamingMode
+                ? "border-[#38bdf8]/60 bg-[#38bdf8]/15 text-[#38bdf8]"
+                : "border-white/12 bg-white/[0.06] text-[#9aa6bc] hover:text-white"
+            }`}
+          >
+            <Gamepad2 className="h-4 w-4" />
+            <span className="hidden md:inline">
+              {gamingMode ? "Game ON" : "Game"}
+            </span>
+          </button>
+
+          <div className="relative flex-1 max-w-xs sm:max-w-sm lg:flex-none lg:w-64">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa6bc]" />
           <input
             type="text"
@@ -120,6 +144,7 @@ function NavbarInner() {
               <X className="h-3.5 w-3.5" />
             </button>
           )}
+          </div>
         </div>
       </div>
     </header>

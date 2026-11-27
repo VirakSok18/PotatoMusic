@@ -76,6 +76,8 @@ interface PlayerContextValue {
   repeat: "off" | "all" | "one";
   sleepTimer: number | "end" | null;
   setSleepTimer: (mode: number | "end" | null) => void;
+  gamingMode: boolean;
+  toggleGamingMode: () => void;
   isExpanded: boolean;
   setIsExpanded: (open: boolean) => void;
   playTrack: (track: Track, newQueue?: Track[]) => void;
@@ -461,25 +463,71 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     };
   }, [nextTrack, showToast]);
 
-  // Pause GPU animations & React time-polling when tab is hidden (e.g. while gaming)
+  const [gamingMode, setGamingMode] = useState(false);
+  const windowFocusedRef = useRef(true);
+  const gamingModeRef = useRef(false);
+
   useEffect(() => {
-    const syncVisibility = () => {
-      const hidden = document.hidden;
-      document.documentElement.classList.toggle("tab-hidden", hidden);
-      if (!hidden && playerReadyRef.current && playerRef.current) {
+    try {
+      const saved = localStorage.getItem("potatomusic_gaming_mode");
+      if (saved === "1") {
+        setGamingMode(true);
+        gamingModeRef.current = true;
+      }
+    } catch {}
+  }, []);
+
+  const toggleGamingMode = useCallback(() => {
+    setGamingMode((prev) => {
+      const next = !prev;
+      gamingModeRef.current = next;
+      try {
+        localStorage.setItem("potatomusic_gaming_mode", next ? "1" : "0");
+      } catch {}
+      showToast(next ? "Gaming Mode ON (low GPU/CPU)" : "Gaming Mode OFF");
+      return next;
+    });
+  }, [showToast]);
+
+  // Pause GPU animations & React time-polling when tab is hidden, window blurred, or Gaming Mode is ON
+  useEffect(() => {
+    const syncPerformanceState = () => {
+      const paused =
+        document.hidden || !windowFocusedRef.current || gamingModeRef.current;
+      document.documentElement.classList.toggle("tab-hidden", paused);
+      document.documentElement.classList.toggle(
+        "gaming-mode",
+        gamingModeRef.current
+      );
+      if (!paused && playerReadyRef.current && playerRef.current) {
         const t = playerRef.current.getCurrentTime();
         if (Number.isFinite(t)) setCurrentTime(t);
       }
     };
-    syncVisibility();
-    document.addEventListener("visibilitychange", syncVisibility);
-    return () => document.removeEventListener("visibilitychange", syncVisibility);
-  }, []);
+    const onBlur = () => {
+      windowFocusedRef.current = false;
+      syncPerformanceState();
+    };
+    const onFocus = () => {
+      windowFocusedRef.current = true;
+      syncPerformanceState();
+    };
+    syncPerformanceState();
+    document.addEventListener("visibilitychange", syncPerformanceState);
+    window.addEventListener("blur", onBlur);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      document.removeEventListener("visibilitychange", syncPerformanceState);
+      window.removeEventListener("blur", onBlur);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [gamingMode]);
 
-  // Poll playback time smoothly for seek bar + synced lyrics (skipped when tab is hidden)
+  // Poll playback time smoothly for seek bar + synced lyrics (skipped when hidden, unfocused, or Gaming Mode)
   useEffect(() => {
     const interval = setInterval(() => {
-      if (document.hidden) return;
+      if (document.hidden || !windowFocusedRef.current || gamingModeRef.current)
+        return;
       if (!playerReadyRef.current || !playerRef.current) return;
       if (!isPlaying) return;
       const t = playerRef.current.getCurrentTime();
@@ -833,6 +881,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         setVolume,
         toggleShuffle,
         cycleRepeat,
+        gamingMode,
+        toggleGamingMode,
         showToast,
         likedTracks,
         recentTracks,
